@@ -11,7 +11,16 @@ def load_html(
     get_headers=lambda cell: cell.text,
     title=None
 ):
-
+    '''Load an HTML table from a file.
+    
+    file - the file to load
+    tableid - the html `id` of the table
+    attrmatch - match attributes in the rows to catch the rows you want to actually include
+    header_row - the row to get from the header
+    indexcol - a column to make the index of the table. Set to None to use pandas index
+    get_headers - a function that converts a header row into a text string for the column name in pandas
+    title - optionally set a title attribute
+    '''
     # Read the file
     with open(file) as f:
         soup = BeautifulSoup(f)
@@ -39,8 +48,9 @@ def load_html(
     
     # Convert to a dataframe
     df = pd.DataFrame(vals,columns=headers)
-    df.set_index(indexcol,drop=True,inplace=True)
-    df.index.name = None
+    if indexcol is not None:
+        df.set_index(indexcol,drop=True,inplace=True)
+        df.index.name = None
     df.dropna(axis=0,how='any',inplace=True)
 
     # Convert to numeric
@@ -48,7 +58,7 @@ def load_html(
         try:
             tonum = pd.to_numeric(df[col])
             df[col] = tonum
-        except ValueError:
+        except (ValueError,TypeError):
             pass
     try:
         tonum = pd.to_numeric(df.index)
