@@ -31,6 +31,46 @@ team_color = {
 'WAS':'F5002F'
 }
 
+conference_teams = {
+    'west': [
+        'DAL',
+        'DEN',
+        'GSW',
+        'HOU',
+        'LAC',
+        'LAL',
+        'MEM', 'VAN',
+        'MIN',
+        'NOP', 'NOH', 'NOK',
+        'OKC', 'SEA',
+        'PHO',
+        'POR',
+        'SAC',
+        'SAS',
+        'UTA',
+    ],
+
+    'east': [
+        'ATL',
+        'BOS',
+        'BRK', 'NJN',
+        'CHI',
+        'CHO', 'CHH', 'CHA',
+        'CLE',
+        'DET',
+        'IND',
+        'MIA',
+        'MIL',
+        'NYK',
+        'ORL',
+        'PHI',
+        'TOR',
+        'WAS',
+    ]
+}
+
+team_conference = {i: j for j,k in conference_teams.items() for i in k}
+
 import htmltable
 
 def load_bbref(file, tableid, indexcol='Rk', **kwargs):
