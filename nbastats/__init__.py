@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 import os
 
 from requests import get
+import requests.exceptions
 import pandas as pd
 
 TODAY = datetime.today()
@@ -35,6 +36,12 @@ try:
 except ImportError:
     HAS_REQUESTS_CACHE = False
 
+class NbaStatsError(RuntimeError):
+    def __init__(self, text, status_code, url):
+        super().__init__(text)
+        self.status_code = status_code
+        self.url = url
+    
 def _get_json(endpoint, params, referer='scores'):
     """
     Internal method to streamline our requests / json getting
@@ -50,8 +57,12 @@ def _get_json(endpoint, params, referer='scores'):
     h['referer'] = 'http://stats.nba.com/{ref}/'.format(ref=referer)
     _get = get(BASE_URL.format(endpoint=endpoint), params=params,
                headers=h)
-    print(_get.url)
-    _get.raise_for_status()
+    try:
+        _get.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print(_get.url)
+        raise NbaStatsError(e.response.text, e.response.status_code, _get.url) from None
+        
     #return _get.text
     return _get.json()
 
