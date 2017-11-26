@@ -103,3 +103,10 @@ def get_params_from_url(url):
     parms = {i[0]:i[1] for i in parms}
     return parms
     
+def _merge_fields(fields, parms):
+    this_fields = dict(**fields)
+    for i,j in parms.items():
+        if i not in this_fields:
+            raise ArgumentError("unknown parameter '{}'; see `fields`".format(i))
+        this_fields[i] = j
+    return this_fields

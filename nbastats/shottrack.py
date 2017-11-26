@@ -1,14 +1,12 @@
 import nbastats
 import numpy as np
 import pandas as pd
+from .parameters import *
 
 DIST_RANGE_VERY_TIGHT = '0-2 Feet - Very Tight'
 DIST_RANGE_TIGHT = '2-4 Feet - Tight'
 DIST_RANGE_OPEN = '4-6 Feet - Open'
 DIST_RANGE_WIDE_OPEN = '6+ Feet - Wide Open'
-
-REGULAR_SEASON = 'Regular Season'
-PER_GAME = 'PerGame'
 
 fields = {
  'CloseDefDistRange': '',
@@ -53,13 +51,9 @@ fields = {
 }
     
 def get_shottrack_data(**parms):
-    '''Return the lineup data given the params'''
+    '''Return the shot-tracking data given the params'''
     global fields
-    this_fields = dict(**fields)
-    for i,j in parms.items():
-        if i not in this_fields:
-            raise ArgumentError("unknown parameter '{}'; see `shottrack.fields`".format(i))
-        this_fields[i] = j
+    this_fields = nbastats._merge_fields(fields, parms)
     js = nbastats._get_json('leaguedashteamptshot',this_fields,referer='lineups')
     df = nbastats._api_scrape(js)
     return df

@@ -1,10 +1,41 @@
 import nbastats
 import numpy as np
 import pandas as pd
+from .parameters import *
 
-def get_lineup_data(parms):
+fields = {'Conference': '',
+ 'DateFrom': '',
+ 'DateTo': '',
+ 'Division': '',
+ 'GameID': '',
+ 'GameSegment': '',
+ 'GroupQuantity': '5',
+ 'LastNGames': '0',
+ 'LeagueID': '00',
+ 'Location': '',
+ 'MeasureType': MEASURE_TYPE_ADVANCED,
+ 'Month': '0',
+ 'OpponentTeamID': '0',
+ 'Outcome': '',
+ 'PORound': '0',
+ 'PaceAdjust': 'N',
+ 'PerMode': PER_GAME,
+ 'Period': '0',
+ 'PlusMinus': 'N',
+ 'Rank': 'N',
+ 'Season': '',
+ 'SeasonSegment': '',
+ 'SeasonType': REGULAR_SEASON,
+ 'ShotClockRange': '',
+ 'TeamID': '',
+ 'VsConference': '',
+ 'VsDivision': ''}
+    
+def get_lineup_data(**parms):
     '''Return the lineup data given the params'''
-    js = nbastats._get_json('leaguedashlineups',parms,referer='lineups')
+    global fields
+    this_fields = nbastats._merge_fields(fields, parms)
+    js = nbastats._get_json('leaguedashlineups',this_fields,referer='lineups')
     df = nbastats._api_scrape(js)
     return df
 
